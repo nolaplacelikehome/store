@@ -1,10 +1,8 @@
 import { PrismaClient } from '@prisma/client';
 
-// initialize Prisma Client
 const prisma = new PrismaClient();
 
 async function main() {
-  // create two dummy articles
   const user1 = await prisma.user.upsert({
     where: { email: 'test@test.com' },
     update: {},
@@ -25,7 +23,29 @@ async function main() {
     },
   });
 
-  console.log({ user1, user2 });
+  const productAndSizeAndColor1 = await prisma.product.upsert({
+    where: { id: 1 },
+    update: {},
+    create: {
+			name: 'prod',
+      description: 'product description',
+      quantity: 3,
+      size: {
+        create: [
+          { size: 'small' },
+          { size: 'medium' }
+        ]
+      },
+      color: {
+        create: [
+          { color: 'Black' },
+          { color: 'Blue' }
+        ]
+      }
+    },
+  });
+
+  console.log({ user1, user2, productAndSizeAndColor1 });
 }
 
 // execute the main function
