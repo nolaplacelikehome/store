@@ -67,7 +67,7 @@ model Product {
   category      ProductCatagory?      @relation(fields: [categoryId], references: [id])
   categoryId    Int?
   productItem   ProductItem[]              
-  name          String 
+  name          String                @unique
   description   String
   productImage  String
 }
