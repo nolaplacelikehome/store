@@ -23,29 +23,9 @@ async function main() {
     },
   });
 
-  const productAndSizeAndColor1 = await prisma.product.upsert({
-    where: { id: 1 },
-    update: {},
-    create: {
-			name: 'prod',
-      description: 'product description',
-      quantity: 3,
-      size: {
-        create: [
-          { size: 'small' },
-          { size: 'medium' }
-        ]
-      },
-      color: {
-        create: [
-          { color: 'Black' },
-          { color: 'Blue' }
-        ]
-      }
-    },
-  });
+  
 
-  console.log({ user1, user2, productAndSizeAndColor1 });
+  console.log({ user1, user2 });
 }
 
 // execute the main function

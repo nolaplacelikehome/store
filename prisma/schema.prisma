@@ -10,24 +10,111 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Users
+
 model User {
-  id        Int       @id @default(autoincrement())
-  name      String? 
-  email     String    @unique
-  password  String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id             Int             @id @default(autoincrement())
+  name           String? 
+  email          String          @unique
+  password       String
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  shoppingCarts  ShoppingCart[]
+  shopOrders     ShopOrder[]
+}
+
+// Products
+
+model ProductCatagory {
+  id                  Int                 @id @default(autoincrement())
+  products            Product[]           
+  variations          Variation[] 
+  categoryName        String
+}
+
+// Instance of product
+model ProductItem {
+  id                     Int                      @id @default(autoincrement())
+  product                Product                  @relation(fields: [productId], references: [id])
+  productId              Int   
+  productConfiguarations ProductConfiguration[] 
+  shoppingCartItems      ShoppingCartItem[]
+  SKU                    String
+  qtyInStock             Int  
+  productImage           String
+  price                  Decimal
+  orderLines             OrderLine[]           
+}
+
+model ProductConfiguration {
+  id                    Int               @id @default(autoincrement())
+  productItem           ProductItem       @relation(fields: [prductItemId], references: [id])
+  prductItemId          Int
+  variationOption       VariationOption   @relation(fields: [variationOptionId], references: [id])
+  variationOptionId     Int
+}
+
+model VariationOption {
+  id                    Int                       @id @default(autoincrement())
+  variation             Variation                 @relation(fields: [variationOptionId], references: [id])
+  variationOptionId     Int
+  productConfigurations ProductConfiguration[]
+  value                 String
 }
 
 model Product {
-  id            Int       @id @default(autoincrement())
-  categoryId    Int   
+  id            Int                   @id @default(autoincrement())
+  category      ProductCatagory?      @relation(fields: [categoryId], references: [id])
+  categoryId    Int?
+  productItem   ProductItem[]              
   name          String 
   description   String
-  productImage  Unsupported("blob")
+  productImage  String
 }
 
-model ProductCatagory {
-  id            Int       @id @default(autoincrement())
-  
+model Variation {
+  id                Int               @id @default(autoincrement())
+  category          ProductCatagory   @relation(fields: [categoryId], references: [id])
+  categoryId        Int
+  variationOption   VariationOption[]
+  name              String
+}
+
+// Shopping cart
+
+model ShoppingCart {
+  id            Int                 @id @default(autoincrement())
+  user          User                @relation(fields: [userId], references: [id])
+  userId        Int
+  shoppingCart  ShoppingCartItem[]        
+} 
+
+model ShoppingCartItem {
+  id            Int             @id @default(autoincrement())
+  shoppingCart  ShoppingCart    @relation(fields: [cartId], references: [id])
+  cartId        Int
+  productItem   ProductItem     @relation(fields: [productItemId], references: [id])
+  productItemId Int
+  quantity      Int
+}
+
+// Shop orders
+
+model ShopOrder {
+  id                Int           @id @default(autoincrement())
+  user              User          @relation(fields: [userId], references: [id])
+  userId            Int          
+  orderDate         DateTime    
+  orderTotal        Decimal
+  orderLines        OrderLine[] 
+}
+
+model OrderLine {
+  id              Int           @id @default(autoincrement())
+  productItemId   Int             
+  productItem     ProductItem   @relation(fields: [productItemId], references: [id])
+  shopOrderId     Int
+  shopOrder       ShopOrder     @relation(fields: [shopOrderId], references: [id])
+  quantity        Int
+  price           Decimal
 }

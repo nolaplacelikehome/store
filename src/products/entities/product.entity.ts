@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Product, Size, Color } from '@prisma/client';
+import { Product, ProductItem } from '@prisma/client';
 import { Exclude } from 'class-transformer';
 
 export class ProductsEntity implements Product {
@@ -11,17 +11,14 @@ export class ProductsEntity implements Product {
   id: number;
 
   @ApiProperty()
-  name: string;
+  categoryId: number;
 
   @ApiProperty()
+  name: string;	
+
+	@ApiProperty()
   description: string;
 
   @ApiProperty()
-  quantity: number;	
-
-	@ApiProperty()
-  size: Size[];
-
-  @ApiProperty()
-  color: Color[];
+  productImage: string;
 }

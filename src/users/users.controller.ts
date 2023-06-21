@@ -32,12 +32,12 @@ export class UsersController {
   @Patch(':id')
   @ApiCreatedResponse({ type: UserEntity })
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return new UserEntity(await this.usersService.update(id, updateUserDto));
+    return new UserEntity(await this.usersService.update(+id, updateUserDto));
   }
 
   @Delete(':id')
   @ApiOkResponse({ type: UserEntity })
   async remove(@Param('id') id: string) {
-    return new UserEntity(await this.usersService.remove(id));
+    return new UserEntity(await this.usersService.remove(+id));
   }
 }
